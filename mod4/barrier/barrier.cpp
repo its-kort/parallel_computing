@@ -1,7 +1,7 @@
-#include <iostream>
-#include <thread>
 #include <barrier>
 #include <chrono>
+#include <iostream>
+#include <thread>
 using namespace std;
 
 barrier start_game(3);
@@ -15,6 +15,15 @@ void character_select(string username, string character_name, int time_taken) {
 
     start_game.arrive_and_wait();
     cout << "[" << username << "]" << " In Game. " << endl;
+
+
+    srand(time(NULL));
+    int alive_time = rand() % 5 + time_taken;
+    cout << "[" << username << "]" << " Played for. " << alive_time << " seconds." << endl;
+
+    this_thread::sleep_for(chrono::seconds(alive_time));
+    cout << "[" << username << "]" << " Eliminated." << endl;
+    start_game.arrive_and_wait();
 }
 
 int main() {
@@ -24,9 +33,9 @@ int main() {
     thread player2(character_select, "Shikkari", "The Punisher", 1);
     thread player3(character_select, "Bea", "Groot", 4);
 
-    this_thread::sleep_for(chrono::seconds(10));
+    this_thread::sleep_for(chrono::seconds(20));
 
-    cout << "Match started." << endl;
+    cout << "Match over." << endl;
 
     player1.join();
     player2.join();
